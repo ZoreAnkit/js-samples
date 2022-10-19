@@ -40,6 +40,21 @@ function initMap(): void {
     map: map,
   });
 
+  document.getElementById("start")!.addEventListener("click", () => {
+    start(line);
+  });
+  document.getElementById("stop")!.addEventListener("click", stop);
+
+  animateCircle(line);
+}
+
+let animate = true;
+function stop(): void {
+  animate = false;
+}
+
+function start(line: google.maps.Polyline): void {
+  animate = true;
   animateCircle(line);
 }
 
@@ -48,12 +63,13 @@ function initMap(): void {
 function animateCircle(line: google.maps.Polyline) {
   let count = 0;
 
-  window.setInterval(() => {
+  let intervalHandler = window.setInterval(() => {
     count = (count + 1) % 200;
 
     const icons = line.get("icons");
 
     icons[0].offset = count / 2 + "%";
+    if (count >= 199 && !animate) window.clearTimeout(intervalHandler);
     line.set("icons", icons);
   }, 20);
 }
